@@ -1,0 +1,9 @@
+{
+  "create": {
+    "grand_total": 10.5,
+    "total_refunded": 0.01,
+    "currency": "USD",
+    "transaction_status": "REFUNDED",
+    "status": { "code": "00", "message": "Success!" }
+  }
+}

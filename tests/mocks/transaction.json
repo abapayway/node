@@ -1,0 +1,21 @@
+{
+  "getByMerchantRef": {
+    "data": [
+      {
+        "transaction_id": "17394277693",
+        "transaction_date": "2025-02-13T08:42:36Z",
+        "payment_status": "APPROVED",
+        "payment_status_code": 0,
+        "original_amount": 10.5,
+        "original_currency": "USD",
+        "total_amount": 10.5,
+        "discount_amount": 0,
+        "refund_amount": 0,
+        "payment_amount": 10.5,
+        "payment_currency": "USD",
+        "merchant_ref": "REF-001"
+      }
+    ],
+    "status": { "code": "00", "message": "Success!" }
+  }
+}

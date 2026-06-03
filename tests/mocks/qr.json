@@ -1,0 +1,9 @@
+{
+  "generate": {
+    "status": { "code": "00", "message": "Success" },
+    "data": {
+      "qr_string": "KHQR-test-string",
+      "tran_id": "17536691884"
+    }
+  }
+}

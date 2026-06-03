@@ -1,0 +1,14 @@
+{
+  "complete": {
+    "grand_total": 10.5,
+    "currency": "USD",
+    "transaction_status": "APPROVED",
+    "status": { "code": "00", "message": "Success!" }
+  },
+  "cancel": {
+    "grand_total": 10.5,
+    "currency": "USD",
+    "transaction_status": "CANCELLED",
+    "status": { "code": "00", "message": "Success!" }
+  }
+}

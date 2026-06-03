@@ -1,0 +1,54 @@
+{
+  "html": "<!DOCTYPE html><html><title>PayWay - Checkout</title></html>",
+  "transactionDetail": {
+    "data": {
+      "transaction_id": "17394277693",
+      "payment_status_code": 0,
+      "payment_status": "APPROVED",
+      "original_amount": 10.5,
+      "original_currency": "USD",
+      "payment_amount": 10.5,
+      "payment_currency": "USD",
+      "total_amount": 10.5,
+      "refund_amount": 0,
+      "discount_amount": 0,
+      "transaction_date": "2025-02-13T08:42:36Z"
+    },
+    "status": { "code": "00", "message": "Success!" }
+  },
+  "checkTransaction": {
+    "data": {
+      "payment_status_code": 0,
+      "payment_status": "APPROVED",
+      "total_amount": 10.5,
+      "original_amount": 10.5,
+      "refund_amount": 0,
+      "discount_amount": 0,
+      "payment_amount": 10.5,
+      "payment_currency": "USD",
+      "transaction_date": "2025-02-13T08:42:36Z"
+    },
+    "status": { "code": "00", "message": "Success!" }
+  },
+  "closeTransaction": {
+    "status": { "code": "00", "message": "Success", "tran_id": "17394277693" }
+  },
+  "transactionList": {
+    "data": [
+      {
+        "transaction_id": "17394277693",
+        "payment_status": "APPROVED",
+        "amount": 10.5,
+        "currency": "USD",
+        "transaction_date": "2025-02-13T08:42:36Z"
+      }
+    ],
+    "status": { "code": "00", "message": "Success!" }
+  },
+  "exchangeRate": {
+    "status": { "code": "00", "message": "Success" },
+    "exchange_rates": {
+      "usd": { "buy": "4100", "sell": "4110" }
+    }
+  }
+}

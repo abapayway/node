@@ -1,0 +1,12 @@
+{
+  "name": "abapayway-express-example",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@abapayway/node": "file:../..",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}

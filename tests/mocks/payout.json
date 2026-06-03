@@ -1,0 +1,24 @@
+{
+  "create": {
+    "transaction_id": "172595840773178",
+    "transaction_date": "2024-09-10T15:53:27Z",
+    "transaction_amount": 3.44,
+    "transaction_currency": "USD",
+    "beneficiaries": [
+      {
+        "payout_id": "172595842687056",
+        "name": "",
+        "mid_acccount": "200030000",
+        "amount": 1.72,
+        "currency": "USD"
+      }
+    ],
+    "status": { "code": "0", "message": "Success!" }
+  },
+  "updateBeneficiary": {
+    "status": { "code": "0", "message": "Success!" }
+  },
+  "whitelist": {
+    "status": { "code": "0", "message": "Success!" }
+  }
+}
