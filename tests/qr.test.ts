@@ -1,4 +1,4 @@
-import { Currency } from "../src/types/common";
+import { Currency, QrPaymentOption } from "../src/types/common";
 import { createTestClient, mockFetch } from "./helpers";
 import qrMocks from "./mocks/qr.json";
 
@@ -10,12 +10,15 @@ describe("QrModule", () => {
     });
 
     const result = await createTestClient().qr.generate({
-      amount: 1.5,
+      amount: 0.01,
       currency: Currency.USD,
-      orderId: "17536691884",
-      merchantRef: "REF-001",
+      orderId: "20250311033231",
+      paymentOption: QrPaymentOption.ABAPAY_KHQR,
+      lifetime: 6,
+      qrImageTemplate: "template3_color",
     });
 
-    expect(result.data?.qr_string).toBeDefined();
+    expect(result.qrString).toBeDefined();
+    expect(result.qrImage).toContain("base64");
   });
 });

@@ -1,4 +1,11 @@
-import type { CheckoutItem, Currency, PayWayStatus, PaymentOption } from "./common.js";
+import type {
+  CheckoutItem,
+  Currency,
+  PayWayStatus,
+  PaymentOption,
+  SubscriptionFrequency,
+  TokenType,
+} from "./common.js";
 
 /** Options for creating a checkout / purchase transaction */
 export interface CheckoutCreateOptions {
@@ -48,8 +55,12 @@ export interface CheckoutCreateOptions {
   googlePayToken?: string;
   /** Skip success page flag */
   skipSuccessPage?: string;
-  /** Consumer token ID for saved payment */
+  /** Consumer token ID for saved payment / subscription */
   ctid?: string;
+  /** Credentials on file token flag (e.g. CITR_FIX for scheduled subscription) */
+  tokenFlag?: TokenType | string;
+  /** Billing frequency for scheduled payments (`1W`, `1M`, `2M`) */
+  frequency?: SubscriptionFrequency | string;
   /** View type: `hosted` for mobile */
   viewType?: string;
   /** Pre-request time override */

@@ -55,8 +55,48 @@ console.log(status.data.payment_status);
 | `credentials` | Link account/card, token payments, renew, remove |
 | `qr` | Generate payment QR codes |
 | `paymentLink` | Create and retrieve payment links |
-| `preAuth` | Complete or cancel pre-authorizations |
+| `preAuth` | Create, complete, or cancel pre-authorizations |
 | `payout` | Funds routing and beneficiary management |
+
+## Scheduled subscriptions
+
+```typescript
+import { TokenType, SubscriptionFrequency } from "@abapayway/node";
+
+// Register (CITR_FIX + frequency)
+await payway.credentials.subscribe({
+  ctid: "user-123",
+  requestId: "sub-001",
+  amount: 20,
+  currency: Currency.USD,
+  returnUrl: "https://yoursite.com/return",
+  tokenFlag: TokenType.CITR_FIX,
+  frequency: SubscriptionFrequency.MONTHLY,
+});
+
+// Bill each cycle (MITR_FIX)
+await payway.credentials.chargeSubscription(token, {
+  orderId: "bill-001",
+  amount: 20,
+  currency: Currency.USD,
+  tokenType: TokenType.MITR_FIX,
+});
+```
+
+## Pre-authorization
+
+```typescript
+const { html } = await payway.preAuth.create({
+  orderId: "HOLD-001",
+  amount: 100,
+  currency: Currency.USD,
+  returnUrl: "https://yoursite.com/return",
+});
+
+// Later: capture or cancel
+await payway.preAuth.complete("HOLD-001", { amount: 100 });
+await payway.preAuth.cancel("HOLD-001");
+```
 
 ## Webhook verification
 

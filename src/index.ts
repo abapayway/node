@@ -1,6 +1,13 @@
 export { ABAPayWay } from "./client.js";
 export type { ABAPayWayConfig, ResolvedConfig } from "./config.js";
-export { BASE_URL_PROD, BASE_URL_SANDBOX, API_PATHS } from "./constants.js";
+export {
+  BASE_URL_PROD,
+  BASE_URL_SANDBOX,
+  API_PATHS,
+  PURCHASE_HASH_FIELDS,
+  QR_HASH_FIELDS,
+  LINK_CARD_HASH_FIELDS,
+} from "./constants.js";
 
 export {
   Currency,
@@ -8,6 +15,9 @@ export {
   TransactionStatus,
   TokenType,
   BeneficiaryStatus,
+  SubscriptionFrequency,
+  QrPaymentOption,
+  PurchaseType,
 } from "./types/common.js";
 export type {
   CheckoutItem,
@@ -58,6 +68,8 @@ export type {
 } from "./types/payment-link.js";
 
 export type {
+  PreAuthCreateOptions,
+  PreAuthCreateResponse,
   PreAuthCompleteOptions,
   PreAuthCompleteWithPayoutOptions,
   PreAuthResponse,

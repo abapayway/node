@@ -1,4 +1,5 @@
-import { API_PATHS } from "../constants.js";
+import { API_PATHS, QR_HASH_FIELDS } from "../constants.js";
+import { PurchaseType, QrPaymentOption } from "../types/common.js";
 import type { QrGenerateOptions, QrGenerateResponse } from "../types/qr.js";
 import { buildHash, formatRequestTime } from "../utils/hash.js";
 import type { HttpClient } from "../utils/request.js";
@@ -11,29 +12,53 @@ export class QrModule {
   constructor(private readonly http: HttpClient) {}
 
   /**
-   * Generate a payment QR code.
+   * Generate a payment QR code (ABA KHQR, WeChat, or Alipay).
    */
   async generate(options: QrGenerateOptions): Promise<QrGenerateResponse> {
-    const reqTime = formatRequestTime();
-    const hashValues = {
+    const reqTime = options.reqTime ?? formatRequestTime();
+    const items =
+      options.items !== undefined
+        ? Buffer.from(JSON.stringify(options.items)).toString("base64")
+        : undefined;
+    const customFields =
+      options.customFields !== undefined
+        ? Buffer.from(JSON.stringify(options.customFields)).toString("base64")
+        : undefined;
+    const payout =
+      options.payout !== undefined
+        ? Buffer.from(JSON.stringify(options.payout)).toString("base64")
+        : undefined;
+    const callbackUrl = options.callbackUrl
+      ? Buffer.from(options.callbackUrl).toString("base64")
+      : undefined;
+    const returnDeeplink = options.returnDeeplink
+      ? Buffer.from(options.returnDeeplink).toString("base64")
+      : undefined;
+
+    const purchaseType = options.purchaseType ?? PurchaseType.PURCHASE;
+    const paymentOption = options.paymentOption ?? QrPaymentOption.ABAPAY_KHQR;
+
+    const hashValues: Record<string, string | undefined> = {
       req_time: reqTime,
       merchant_id: this.http.merchantId,
       tran_id: options.orderId,
       amount: String(options.amount),
-      currency: options.currency,
-      merchant_ref: options.merchantRef,
-      callback_url: options.callbackUrl,
+      items,
+      first_name: options.firstName,
+      last_name: options.lastName,
+      email: options.email,
+      phone: options.phone,
+      purchase_type: purchaseType,
+      payment_option: paymentOption,
+      callback_url: callbackUrl,
+      return_deeplink: returnDeeplink,
+      currency: String(options.currency),
+      custom_fields: customFields,
+      return_params: options.returnParams,
+      payout,
+      lifetime: String(options.lifetime),
+      qr_image_template: options.qrImageTemplate,
     };
-
-    const fieldOrder = [
-      "req_time",
-      "merchant_id",
-      "tran_id",
-      "amount",
-      "currency",
-      "merchant_ref",
-      "callback_url",
-    ] as const;
 
     const body: Record<string, string> = {
       req_time: reqTime,
@@ -41,11 +66,28 @@ export class QrModule {
       tran_id: options.orderId,
       amount: String(options.amount),
       currency: String(options.currency),
-      hash: buildHash(hashValues, fieldOrder, this.http.apiKey),
+      purchase_type: purchaseType,
+      payment_option: paymentOption,
+      lifetime: String(options.lifetime),
+      qr_image_template: options.qrImageTemplate,
+      hash: buildHash(hashValues, QR_HASH_FIELDS, this.http.apiKey),
     };
 
-    if (options.merchantRef) body.merchant_ref = options.merchantRef;
-    if (options.callbackUrl) body.callback_url = options.callbackUrl;
+    for (const key of [
+      "items",
+      "first_name",
+      "last_name",
+      "email",
+      "phone",
+      "callback_url",
+      "return_deeplink",
+      "custom_fields",
+      "return_params",
+      "payout",
+    ] as const) {
+      const value = hashValues[key];
+      if (value !== undefined) body[key] = value;
+    }
 
     const response = await this.http.request<QrGenerateResponse>({
       path: API_PATHS.qrGenerate,

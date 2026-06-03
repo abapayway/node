@@ -20,14 +20,45 @@ describe("CredentialsModule", () => {
   });
 
   it("links a card", async () => {
-    mockFetch(() => credentialsMocks.linkCard);
+    mockFetch((url) => {
+      expect(url).toContain("cof/link-card");
+      return credentialsMocks.linkCardHtml;
+    });
     const result = await createTestClient().credentials.linkCard({
       ctid: "customer001",
       requestId: "req002",
       tokenFlag: TokenType.CITO_FLEX,
       currency: Currency.USD,
     });
-    expect(result.data.html).toContain("form");
+    expect(result.html).toContain("form");
+  });
+
+  it("registers a scheduled subscription via purchase", async () => {
+    mockFetch((url) => {
+      if (url.includes("/purchase")) return "<html>subscribe</html>";
+      return {};
+    });
+    const result = await createTestClient().credentials.subscribe({
+      ctid: "customer001",
+      requestId: "sub001",
+      amount: 10,
+      currency: Currency.USD,
+      returnUrl: "https://example.com/return",
+      frequency: "1M",
+      tokenFlag: TokenType.CITR_FIX,
+    });
+    expect(result.html).toContain("subscribe");
+  });
+
+  it("charges a subscription with MITR_FIX", async () => {
+    mockFetch(() => credentialsMocks.payment);
+    const result = await createTestClient().credentials.chargeSubscription("tok_123", {
+      amount: 10,
+      currency: Currency.USD,
+      orderId: "bill-001",
+      tokenType: TokenType.MITR_FIX,
+    });
+    expect(result.status.code).toBe("00");
   });
 
   it("processes token payment", async () => {

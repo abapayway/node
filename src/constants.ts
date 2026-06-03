@@ -26,7 +26,7 @@ export const API_PATHS = {
   preAuthCancellation:
     "/api/merchant-portal/merchant-access/online-transaction/pre-auth-cancellation",
   linkAccount: "/api/payment-credential/v3/aof/link-account",
-  linkCard: "/api/payment-credential/v3/aof/link-card",
+  linkCard: "/api/payment-credential/v3/cof/link-card",
   cofPayment: "/api/payment-credential/v3/aof/payment",
   renewToken: "/api/payment-credential/v3/aof/renew-token",
   getTokenDetails: "/api/payment-credential/v3/aof/get-token-details",
@@ -67,4 +67,63 @@ export const PURCHASE_HASH_FIELDS = [
   "additional_params",
   "google_pay_token",
   "skip_success_page",
+  "ctid",
+  "token_flag",
+  "frequency",
+] as const;
+
+/** Link card API hash field order */
+export const LINK_CARD_HASH_FIELDS = [
+  "merchant_id",
+  "request_time",
+  "ctid",
+  "callback_url",
+  "request_id",
+  "token_flag",
+  "frequency",
+  "amount",
+  "currency",
+  "continue_success_url",
+] as const;
+
+/** QR generate API hash field order */
+export const QR_HASH_FIELDS = [
+  "req_time",
+  "merchant_id",
+  "tran_id",
+  "amount",
+  "items",
+  "first_name",
+  "last_name",
+  "email",
+  "phone",
+  "purchase_type",
+  "payment_option",
+  "callback_url",
+  "return_deeplink",
+  "currency",
+  "custom_fields",
+  "return_params",
+  "payout",
+  "lifetime",
+  "qr_image_template",
+] as const;
+
+/** Credentials subscription (purchase + token) hash fields */
+export const SUBSCRIBE_HASH_FIELDS = [
+  "req_time",
+  "merchant_id",
+  "tran_id",
+  "amount",
+  "ctid",
+  "token_flag",
+  "frequency",
+  "currency",
+  "return_url",
+  "items",
+  "payment_option",
+  "firstname",
+  "lastname",
+  "email",
+  "phone",
 ] as const;

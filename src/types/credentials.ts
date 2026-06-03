@@ -1,4 +1,5 @@
-import type { Currency, TokenType } from "./common.js";
+import type { Currency, PaymentOption, SubscriptionFrequency, TokenType } from "./common.js";
+import type { CheckoutItem } from "./common.js";
 
 export interface LinkAccountOptions {
   ctid: string;
@@ -21,13 +22,17 @@ export interface LinkCardOptions {
   tokenFlag: TokenType | string;
   currency: Currency | string;
   callbackUrl?: string;
-  returnUrl?: string;
+  /** Base64-encoded URL shown on PayWay success screen (Done button) */
+  continueSuccessUrl?: string;
+  /** Optional amount field for hash when required by profile */
+  amount?: number;
+  /** Optional frequency (empty for CITI_FLEX / CITO_FLEX) */
+  frequency?: SubscriptionFrequency | string;
   requestTime?: string;
 }
 
 export interface LinkCardResponse {
-  status: { code: string; message: string; trace_id: string };
-  data: { html: string };
+  html: string;
 }
 
 export interface TokenPaymentOptions {
@@ -63,10 +68,23 @@ export interface RemoveTokenResponse {
   status: { code: string; message: string };
 }
 
-export interface SubscribeOptions extends LinkAccountOptions {
+export interface SubscribeOptions {
+  ctid: string;
+  requestId: string;
   amount: number;
+  currency: Currency | string;
   returnUrl: string;
-  items?: string;
+  /** Defaults to CITR_FIX for scheduled subscription registration */
+  tokenFlag?: TokenType | string;
+  /** Required for CITR_FIX — `1W`, `1M`, or `2M` */
+  frequency: SubscriptionFrequency | string;
+  paymentOption?: PaymentOption | string;
+  items?: CheckoutItem[];
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  reqTime?: string;
 }
 
 export interface SubscribeResponse {

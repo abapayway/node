@@ -63,6 +63,8 @@ export class CheckoutModule {
       google_pay_token: options.googlePayToken,
       skip_success_page: options.skipSuccessPage,
       ctid: options.ctid,
+      token_flag: options.tokenFlag,
+      frequency: options.frequency,
       view_type: options.viewType,
     };
 

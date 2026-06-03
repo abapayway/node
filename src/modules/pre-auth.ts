@@ -1,7 +1,10 @@
 import { API_PATHS } from "../constants.js";
+import { PurchaseType } from "../types/common.js";
 import type {
   PreAuthCompleteOptions,
   PreAuthCompleteWithPayoutOptions,
+  PreAuthCreateOptions,
+  PreAuthCreateResponse,
   PreAuthResponse,
 } from "../types/pre-auth.js";
 import { rsaEncrypt } from "../utils/crypto.js";
@@ -9,12 +12,26 @@ import { ValidationError } from "../utils/errors.js";
 import { formatRequestTime, generateHash } from "../utils/hash.js";
 import type { HttpClient } from "../utils/request.js";
 import { assertApiSuccess } from "../utils/request.js";
+import type { CheckoutModule } from "./checkout.js";
 
 /**
- * Pre-authorization capture and cancellation.
+ * Pre-authorization create, capture, and cancellation.
  */
 export class PreAuthModule {
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly checkout: CheckoutModule,
+  ) {}
+
+  /**
+   * Create a pre-authorization hold (Purchase API with `type: pre-auth`).
+   */
+  async create(options: PreAuthCreateOptions): Promise<PreAuthCreateResponse> {
+    return this.checkout.create({
+      ...options,
+      type: PurchaseType.PRE_AUTH,
+    });
+  }
 
   /**
    * Capture funds after initial pre-authorization.

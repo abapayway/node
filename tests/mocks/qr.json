@@ -1,9 +1,12 @@
 {
   "generate": {
-    "status": { "code": "00", "message": "Success" },
-    "data": {
-      "qr_string": "KHQR-test-string",
-      "tran_id": "17536691884"
-    }
+    "qrString": "KHQR-test-string",
+    "qrImage": "data:image/png;base64,iVBORw0KGgo=",
+    "abapay_deeplink": "abamobilebank://ababank.com?type=payway",
+    "app_store": "https://itunes.apple.com/app/aba-mobile-bank",
+    "play_store": "https://play.google.com/store/apps/details?id=com.paygo24.ibank",
+    "amount": 0.01,
+    "currency": "USD",
+    "status": { "code": "0", "message": "Success.", "trace_id": "trace-qr-1" }
   }
 }

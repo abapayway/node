@@ -6,6 +6,22 @@ import { createTestClient, mockFetch } from "./helpers";
 import preAuthMocks from "./mocks/pre-auth.json";
 
 describe("PreAuthModule", () => {
+  it("creates a pre-auth transaction via purchase", async () => {
+    mockFetch((url) => {
+      if (url.includes("/purchase")) return "<html>pre-auth</html>";
+      return {};
+    });
+
+    const result = await createTestClient().preAuth.create({
+      orderId: "preauth-001",
+      amount: 50,
+      currency: "USD",
+      returnUrl: "https://example.com/return",
+    });
+
+    expect(result.html).toContain("pre-auth");
+  });
+
   it("completes pre-auth capture", async () => {
     mockFetch((url) => {
       expect(url).toContain("pre-auth-completion");

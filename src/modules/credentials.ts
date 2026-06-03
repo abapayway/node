@@ -1,4 +1,5 @@
-import { API_PATHS } from "../constants.js";
+import { API_PATHS, LINK_CARD_HASH_FIELDS } from "../constants.js";
+import { TokenType } from "../types/common.js";
 import type {
   LinkAccountOptions,
   LinkAccountResponse,
@@ -15,12 +16,16 @@ import type {
 import { buildHash, formatRequestTime } from "../utils/hash.js";
 import type { HttpClient } from "../utils/request.js";
 import { assertApiSuccess } from "../utils/request.js";
+import type { CheckoutModule } from "./checkout.js";
 
 /**
  * Credentials on file (tokenized payments).
  */
 export class CredentialsModule {
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly checkout: CheckoutModule,
+  ) {}
 
   /**
    * Link an ABA account — returns QR code or ABA Mobile deeplink.
@@ -83,49 +88,46 @@ export class CredentialsModule {
     const callbackUrl = options.callbackUrl
       ? Buffer.from(options.callbackUrl).toString("base64")
       : undefined;
+    const continueSuccessUrl = options.continueSuccessUrl
+      ? Buffer.from(options.continueSuccessUrl).toString("base64")
+      : undefined;
 
-    const hashValues = {
+    const hashValues: Record<string, string | undefined> = {
       merchant_id: this.http.merchantId,
       request_time: requestTime,
       ctid: options.ctid,
       callback_url: callbackUrl,
       request_id: options.requestId,
       token_flag: options.tokenFlag,
-      currency: options.currency,
-      return_url: options.returnUrl,
+      frequency: options.frequency,
+      amount: options.amount !== undefined ? String(options.amount) : undefined,
+      currency: String(options.currency),
+      continue_success_url: continueSuccessUrl,
     };
 
-    const body = {
+    const body: Record<string, string> = {
       merchant_id: this.http.merchantId,
       request_time: requestTime,
       ctid: options.ctid,
       request_id: options.requestId,
-      token_flag: options.tokenFlag,
-      currency: options.currency,
-      callback_url: callbackUrl,
-      return_url: options.returnUrl,
-      hash: buildHash(
-        hashValues,
-        [
-          "merchant_id",
-          "request_time",
-          "ctid",
-          "callback_url",
-          "request_id",
-          "token_flag",
-          "currency",
-          "return_url",
-        ],
-        this.http.apiKey,
-      ),
+      token_flag: String(options.tokenFlag),
+      currency: String(options.currency),
+      hash: buildHash(hashValues, LINK_CARD_HASH_FIELDS, this.http.apiKey),
     };
 
-    const response = await this.http.request<LinkCardResponse>({
+    if (callbackUrl) body.callback_url = callbackUrl;
+    if (continueSuccessUrl) body.continue_success_url = continueSuccessUrl;
+    if (options.amount !== undefined) body.amount = String(options.amount);
+    if (options.frequency) body.frequency = String(options.frequency);
+
+    const html = await this.http.request<string>({
       path: API_PATHS.linkCard,
+      contentType: "multipart",
       body,
+      rawResponse: true,
     });
-    assertApiSuccess(response.status, "Link card failed");
-    return response;
+
+    return { html };
   }
 
   /**
@@ -260,43 +262,40 @@ export class CredentialsModule {
   }
 
   /**
-   * Purchase while linking customer card/account (subscription flow).
+   * Scheduled subscription registration (CITR_FIX) or combined link-and-pay.
+   * Uses Purchase API with `token_flag` and `frequency`.
    */
   async subscribe(options: SubscribeOptions): Promise<SubscribeResponse> {
-    const reqTime = options.requestTime ?? formatRequestTime();
-    const items = options.items;
-
-    const fields: Record<string, string | undefined> = {
-      req_time: reqTime,
-      merchant_id: this.http.merchantId,
-      tran_id: options.requestId,
-      amount: String(options.amount),
-      ctid: options.ctid,
+    const result = await this.checkout.create({
+      orderId: options.requestId,
+      amount: options.amount,
       currency: options.currency,
-      return_url: options.returnUrl,
-      items,
-      token_flag: options.tokenFlag,
-    };
-
-    const hash = buildHash(
-      fields,
-      ["req_time", "merchant_id", "tran_id", "amount", "ctid", "currency", "return_url", "items"],
-      this.http.apiKey,
-    );
-
-    const body: Record<string, string> = {};
-    for (const [k, v] of Object.entries(fields)) {
-      if (v !== undefined) body[k] = v;
-    }
-    body.hash = hash;
-
-    const html = await this.http.request<string>({
-      path: API_PATHS.cofSubscribe,
-      contentType: "multipart",
-      body,
-      rawResponse: true,
+      returnUrl: options.returnUrl,
+      ctid: options.ctid,
+      tokenFlag: options.tokenFlag ?? TokenType.CITR_FIX,
+      frequency: options.frequency,
+      paymentOption: options.paymentOption,
+      items: options.items,
+      firstName: options.firstName,
+      lastName: options.lastName,
+      email: options.email,
+      phone: options.phone,
+      reqTime: options.reqTime,
     });
 
-    return { html };
+    return { html: result.html };
+  }
+
+  /**
+   * Charge a scheduled subscriber on a recurring cycle (MITR_FIX).
+   */
+  async chargeSubscription(
+    token: string,
+    options: TokenPaymentOptions,
+  ): Promise<TokenPaymentResponse> {
+    return this.payment(token, {
+      ...options,
+      tokenType: options.tokenType ?? TokenType.MITR_FIX,
+    });
   }
 }

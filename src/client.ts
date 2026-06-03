@@ -53,10 +53,10 @@ export class ABAPayWay {
     this.transaction = new TransactionModule(this.http);
     this.refund = new RefundModule(this.http);
     this.webhook = new WebhookModule(resolved.apiKey);
-    this.credentials = new CredentialsModule(this.http);
+    this.credentials = new CredentialsModule(this.http, this.checkout);
     this.qr = new QrModule(this.http);
     this.paymentLink = new PaymentLinkModule(this.http);
-    this.preAuth = new PreAuthModule(this.http);
+    this.preAuth = new PreAuthModule(this.http, this.checkout);
     this.payout = new PayoutModule(this.http);
   }
 }
