@@ -46,17 +46,17 @@ console.log(status.data.payment_status);
 
 ## Modules
 
-| Module | Description |
-|--------|-------------|
-| `checkout` | Purchase, transaction details, close/check, list, exchange rates |
-| `transaction` | Lookup by `merchant_ref` (KHQR) |
-| `refund` | Full or partial refunds |
-| `webhook` | HMAC-SHA512 signature verification |
-| `credentials` | Link account/card, token payments, renew, remove |
-| `qr` | Generate payment QR codes |
-| `paymentLink` | Create and retrieve payment links |
-| `preAuth` | Create, complete, or cancel pre-authorizations |
-| `payout` | Funds routing and beneficiary management |
+| Module        | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
+| `checkout`    | Purchase, transaction details, close/check, list, exchange rates |
+| `transaction` | Lookup by `merchant_ref` (KHQR)                                  |
+| `refund`      | Full or partial refunds                                          |
+| `webhook`     | HMAC-SHA512 signature verification                               |
+| `credentials` | Link account/card, token payments, renew, remove                 |
+| `qr`          | Generate payment QR codes                                        |
+| `paymentLink` | Create and retrieve payment links                                |
+| `preAuth`     | Create, complete, or cancel pre-authorizations                   |
+| `payout`      | Funds routing and beneficiary management                         |
 
 ## Scheduled subscriptions
 
@@ -128,10 +128,10 @@ const payway = new ABAPayWay({
 
 ## Environment URLs
 
-| Environment | Base URL |
-|-------------|----------|
-| Sandbox | `https://checkout-sandbox.ababank.com` |
-| Production | `https://checkout.payway.com.kh` |
+| Environment | Base URL                               |
+| ----------- | -------------------------------------- |
+| Sandbox     | `https://checkout-sandbox.ababank.com` |
+| Production  | `https://checkout.payway.com.kh`       |
 
 ## Examples
 
@@ -141,6 +141,7 @@ const payway = new ABAPayWay({
 
 ## Documentation
 
+- [Security & network access](./SECURITY.md) — why Socket/supply-chain tools flag `fetch`
 - [PayWay Developer Suite](https://developer.payway.com.kh/overview-865678m0)
 - [API Endpoints](https://developer.payway.com.kh/api-endpoints-984508m0)
 - [Ecommerce Checkout](https://developer.payway.com.kh/ecommerce-checkout-3158159f0)
